@@ -12,7 +12,7 @@
 #![cfg_attr(not(test), no_std)]
 #![allow(missing_docs)]
 
-use core::cell::Cell;
+use core::{cell::Cell, fmt::Error};
 
 use embedded_batteries_async::smart_battery::{
     self, BatteryModeFields, BatteryStatusFields, CapacityModeSignedValue, CapacityModeValue, DeciKelvin, ErrorCode,
@@ -143,16 +143,33 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
         debug_assert!((input.len() <= LARGEST_CMD_SIZE_BYTES), "Command size too big");
 
         let mut buf = [0u8; 1 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
+        let mut buf2 = [0u8; LARGEST_CMD_SIZE_BYTES];
         buf[0] = ((address >> MAC_CMD_ADDR_SIZE_BITS) & 0xFF) as u8;
         buf[1] = MAC_CMD_ADDR_SIZE_BYTES as u8;
         buf[2] = ((address >> 8) & 0xFF) as u8;
         buf[3] = (address & 0xFF) as u8;
         buf[4..input.len() + 4].copy_from_slice(input);
-        let len = input.len() + 4; 
-        self.i2c
-            .write_read(BQ_ADDR, &buf[..len], output)
-            .await
-            .map_err(BQ40Z50Error::I2c)
+        let len = input.len() + 4;
+        match self.i2c.write(BQ_ADDR, &buf[..len]).await {
+            Ok(_) => {},
+            Err(err) => {
+                return Err(BQ40Z50Error::I2c(err));
+            }
+        }
+        
+        match self.i2c
+            .write_read(BQ_ADDR, &buf[..1], &mut buf2)
+            .await {
+            Ok(_) => {
+                if output.len() <= LARGEST_CMD_SIZE_BYTES -3 {
+                    output.copy_from_slice(&buf2[3..output.len()+3]);
+                }
+                Ok(())
+            },
+            Err(err) => {
+                Err(BQ40Z50Error::I2c(err))
+            }
+        }
     }
 }
 
