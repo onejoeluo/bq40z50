@@ -144,11 +144,13 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
 
         let mut buf = [0u8; 1 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
         buf[0] = ((address >> MAC_CMD_ADDR_SIZE_BITS) & 0xFF) as u8;
-        buf[1] = ((address >> 8) & 0xFF) as u8;
-        buf[2] = (address & 0xFF) as u8;
-        buf[3..input.len() + 3].copy_from_slice(input);
+        buf[1] = MAC_CMD_ADDR_SIZE_BYTES as u8;
+        buf[2] = ((address >> 8) & 0xFF) as u8;
+        buf[3] = (address & 0xFF) as u8;
+        buf[4..input.len() + 4].copy_from_slice(input);
+        let len = input.len() + 4; 
         self.i2c
-            .write_read(BQ_ADDR, &buf[..=input.len() + MAC_CMD_ADDR_SIZE_BYTES], output)
+            .write_read(BQ_ADDR, &buf[..len], output)
             .await
             .map_err(BQ40Z50Error::I2c)
     }
