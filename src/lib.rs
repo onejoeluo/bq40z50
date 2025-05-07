@@ -143,7 +143,7 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
         debug_assert!((input.len() <= LARGEST_CMD_SIZE_BYTES), "Command size too big");
 
         let mut buf = [0u8; 1 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
-        let mut buf2 = [0u8; LARGEST_CMD_SIZE_BYTES];
+        let mut buf2 = [0u8; LARGEST_CMD_SIZE_BYTES+3];
         buf[0] = ((address >> MAC_CMD_ADDR_SIZE_BITS) & 0xFF) as u8;
         buf[1] = MAC_CMD_ADDR_SIZE_BYTES as u8;
         buf[2] = ((address >> 8) & 0xFF) as u8;
@@ -161,7 +161,7 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
             .write_read(BQ_ADDR, &buf[..1], &mut buf2)
             .await {
             Ok(_) => {
-                if output.len() <= LARGEST_CMD_SIZE_BYTES -3 {
+                if output.len() <= LARGEST_CMD_SIZE_BYTES {
                     output.copy_from_slice(&buf2[3..output.len()+3]);
                 }
                 Ok(())
