@@ -1969,7 +1969,7 @@ MAX_ERROR:
 RELATIVE_STATE_OF_CHARGE:
   type: register
   address: 0x0D
-  size_bits: 16
+  size_bits: 8
   reset_value: 0
   access: RO
   fields:
@@ -1977,7 +1977,7 @@ RELATIVE_STATE_OF_CHARGE:
       base: uint
       access: RO
       start: 0
-      end: 16
+      end: 8
 
 ABSOLUTE_STATE_OF_CHARGE:
   type: register
