@@ -349,7 +349,12 @@ MAC_SAFETY_STATUS:
   type: command
   address: 0x5100
   size_bits_out: 32
+  allow_bit_overlap: true
   fields_out:
+    RAW:
+      base: uint
+      start: 0
+      end: 32
     CUV:
       base: bool
       start: 0
@@ -505,7 +510,12 @@ MAC_PF_STATUS:
   type: command
   address: 0x5300
   size_bits_out: 32
+  allow_bit_overlap: true
   fields_out:
+    RAW:
+      base: uint
+      start: 0
+      end: 32
     SUV:
       base: bool
       start: 0
@@ -682,8 +692,8 @@ MAC_OPERATION_STATUS:
 MAC_CHARGING_STATUS:
   type: command
   address: 0x5500
-  allow_bit_overlap: true
   size_bits_out: 32
+  allow_bit_overlap: true
   fields_out:
     RAW:
       base: uint
@@ -745,7 +755,12 @@ MAC_GAUGING_STATUS:
   type: command
   address: 0x5600
   size_bits_out: 32
+  allow_bit_overlap: true
   fields_out:
+    RAW:
+      base: uint
+      start: 0
+      end: 32
     FD:
       base: bool
       start: 0
