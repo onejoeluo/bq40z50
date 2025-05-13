@@ -1632,7 +1632,7 @@ MAC_FILTER_CAPACITY:
       start: 48
       end: 64
 
-MAC_FILTER_CAPACITY:
+MAC_MANUFACTURE_INFOB:
   type: command
   address: 0x7A00
   size_bits_out: 32
