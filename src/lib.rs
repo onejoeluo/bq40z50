@@ -142,9 +142,9 @@ impl<I2C: I2cTrait> device_driver::AsyncCommandInterface for DeviceInterface<I2C
     ) -> Result<(), Self::Error> {
         debug_assert!((input.len() <= LARGEST_CMD_SIZE_BYTES), "Command size too big");
 
-        let mut buf = [0u8; 1 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
+        let mut buf = [0u8; 2 + MAC_CMD_ADDR_SIZE_BYTES + LARGEST_CMD_SIZE_BYTES];
         let mut buf2 = [0u8; LARGEST_CMD_SIZE_BYTES+3];
-        buf[0] = ((address >> MAC_CMD_ADDR_SIZE_BITS) & 0xFF) as u8;
+        buf[0] = 0x44;
         buf[1] = MAC_CMD_ADDR_SIZE_BYTES as u8;
         buf[2] = ((address >> 8) & 0xFF) as u8;
         buf[3] = (address & 0xFF) as u8;
