@@ -682,6 +682,7 @@ MAC_OPERATION_STATUS:
 MAC_CHARGING_STATUS:
   type: command
   address: 0x5500
+  allow_bit_overlap: true
   size_bits_out: 32
   fields_out:
     RAW:
