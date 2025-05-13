@@ -1977,7 +1977,7 @@ RELATIVE_STATE_OF_CHARGE:
       base: uint
       access: RO
       start: 0
-      end: 8
+      end: 16
 
 ABSOLUTE_STATE_OF_CHARGE:
   type: register
